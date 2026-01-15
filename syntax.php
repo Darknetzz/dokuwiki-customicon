@@ -29,8 +29,13 @@ class syntax_plugin_customicon extends DokuWiki_Syntax_Plugin {
         }
         
         // Get configuration with fallback to defaults
-        $base_url = $this->getConf('icon_base_url');
-        $ext = $this->getConf('icon_extension');
+        $base_url      = $this->getConf('icon_base_url');
+        $ext           = $this->getConf('icon_extension');
+        $fallback_icon = $this->getConf('fallback_icon');
+        $icon_class    = $this->getConf('icon_class');
+        $icon_size     = $this->getConf('icon_size');
+        $icon_title    = $this->getConf('icon_title');
+        $lazy_load     = $this->getConf('lazy_load');
         
         // Use defaults if config is empty
         if(empty($base_url)) {
@@ -39,17 +44,48 @@ class syntax_plugin_customicon extends DokuWiki_Syntax_Plugin {
         if(empty($ext)) {
             $ext = '.png';
         }
+        if(empty($fallback_icon)) {
+            $fallback_icon = 'help';
+        }
+        if(empty($icon_class)) {
+            $icon_class = 'plugin_customicon';
+        }
         
+        // Build icon URL
         $url = $base_url . $icon . $ext;
         $url_escaped = hsc($url);
         $icon_escaped = hsc($icon);
-        $fallback_url = hsc('https://assets.kriss.run/icons/silk/png/help.png');
         
-        return '<img src="' . $url_escaped . '" ' .
-               'alt="' . $icon_escaped . '" ' .
-               'class="plugin_customicon" ' .
-               'onerror="this.src=\'' . $fallback_url . '\'; this.onerror=null;" ' .
-               '/>';
+        // Build fallback URL
+        $fallback_url = hsc($base_url . $fallback_icon . $ext);
+        
+        // Build HTML attributes
+        $attrs = array();
+        $attrs[] = 'src="' . $url_escaped . '"';
+        $attrs[] = 'alt="' . $icon_escaped . '"';
+        $attrs[] = 'class="' . hsc($icon_class) . '"';
+        
+        // Add size if configured
+        if(!empty($icon_size) && is_numeric($icon_size)) {
+            $size_escaped = hsc($icon_size);
+            $attrs[] = 'width="' . $size_escaped . '"';
+            $attrs[] = 'height="' . $size_escaped . '"';
+        }
+        
+        // Add title attribute if enabled
+        if($icon_title) {
+            $attrs[] = 'title="' . $icon_escaped . '"';
+        }
+        
+        // Add lazy loading if enabled
+        if($lazy_load) {
+            $attrs[] = 'loading="lazy"';
+        }
+        
+        // Add error handler for fallback
+        $attrs[] = 'onerror="this.src=\'' . $fallback_url . '\'; this.onerror=null;"';
+        
+        return '<img ' . implode(' ', $attrs) . ' />';
     }
 
     public function render($mode, Doku_Renderer $renderer, $data) {
