@@ -3,5 +3,5 @@ author Kristian Røste
 email  dokuwiki@roste.org
 date   2026-01-15
 name   Custom Icon Shortcut Plugin
-desc   Translates {{customicon>var}} into an img tag from assets.kriss.run
+desc   Translates {{customicon>var}} into an img tag using a {{ icon_base_url }} and {{ icon_extension }}
 url    https://github.com/Darknetzz/dokuwiki-customicon
