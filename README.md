@@ -10,7 +10,11 @@ The Custom Icon Shortcut Plugin translates `{{customicon>iconname}}` syntax into
 
 - Simple syntax: `{{customicon>iconname}}`
 - Configurable icon base URL and file extension
-- Automatic fallback to a help icon if the requested icon doesn't exist
+- Customizable fallback icon when requested icon doesn't exist
+- Configurable CSS class for styling
+- Optional icon sizing (width/height)
+- Optional title attribute for tooltips
+- Optional lazy loading for better performance
 - Input sanitization for security
 - Works with CommonMark plugin
 - Helper function for use in PHP blocks
@@ -32,15 +36,33 @@ git clone https://github.com/Darknetzz/dokuwiki-customicon.git customicon
 
 ## Configuration
 
-Navigate to **Admin → Configuration Settings → Custom Icon Plugin** to configure:
+Navigate to **Admin → Configuration Settings → Custom Icon Shortcut Plugin** to configure:
+
+### Core Settings
 
 - **Icon Base URL**: The base URL where your icons are hosted (default: `https://assets.kriss.run/icons/silk/png/`)
 - **Icon Extension**: The file extension for your icons (default: `.png`)
+
+### Appearance Settings
+
+- **Fallback Icon**: Icon name to use when the requested icon fails to load (default: `help`)
+- **Icon Class**: CSS class applied to all icons (default: `plugin_customicon`)
+- **Icon Size**: Size in pixels for width and height attributes. Leave empty for no size constraint (default: empty)
+
+### Behavior Settings
+
+- **Icon Title**: Enable to add a `title` attribute with the icon name for tooltips (default: enabled)
+- **Lazy Load**: Enable to add `loading="lazy"` attribute for lazy loading images (default: disabled)
 
 ### Default Configuration
 
 - Base URL: `https://assets.kriss.run/icons/silk/png/`
 - Extension: `.png`
+- Fallback Icon: `help`
+- Icon Class: `plugin_customicon`
+- Icon Size: (empty - no size constraint)
+- Icon Title: Enabled
+- Lazy Load: Disabled
 
 ## Usage
 
@@ -98,7 +120,25 @@ echo $plugin ? $plugin->getIconHTML('house') : '';
 
 ## Fallback Behavior
 
-If an icon doesn't exist at the configured URL, the plugin automatically falls back to displaying a help icon (`help.png`) instead. This prevents broken image links.
+If an icon doesn't exist at the configured URL, the plugin automatically falls back to displaying the configured fallback icon (default: `help.png`) instead. This prevents broken image links. The fallback icon can be customized in the plugin configuration.
+
+## Styling
+
+You can style icons using CSS by targeting the configured icon class (default: `plugin_customicon`). For example:
+
+```css
+.plugin_customicon {
+    vertical-align: middle;
+    margin-right: 5px;
+    opacity: 0.8;
+}
+
+.plugin_customicon:hover {
+    opacity: 1.0;
+}
+```
+
+If you've configured a custom icon class in the plugin settings, use that class name instead.
 
 ## Security
 
